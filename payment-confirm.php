@@ -90,16 +90,6 @@ if ($validation->fails()) {
 					));
 	if($insert_registration->affectedRows() == 1) : 
 		$registration_id = $insert_registration->lastInsertID();
-		// insert into transactions master 
-		$insert_transaction = $db->query('INSERT INTO transactions_master 
-					(txn_user_email,txn_status,txn_registration_id,txn_amount,txn_currency) 
-					VALUES (?,?,?,?,?)',
-					array(
-						$email,'processing',$registration_id,$get_pricing_details[0],$get_pricing_details[1]
-					));
-		if($insert_transaction->affectedRows() != 1) : 
-			$db->query('DELETE from registrations_master where id = ? LIMIT 1',$registration_id);
-		endif;
 	else : 
 		$_SESSION['error'][] = "Something went wrong. Please try again.";
 		header("Location: " . $_SERVER['HTTP_REFERER']);
@@ -119,6 +109,7 @@ if ($validation->fails()) {
 				<input type="hidden" name="amount" value="<?=$get_pricing_details[0]?>">
 				<input type="hidden" name="redirect_url" value="<?=$_ENV['APP_DOMAIN']?>payment-response.php">
 				<input type="hidden" name="cancel_url" value="<?=$_ENV['APP_DOMAIN']?>payment-cancel.php">
+				<input type="hidden" name="order_id" value="INDAM-CONF-2022-".$registration_id>
 				<div class="form-group">
 					<input type="text" name="billing_name" value="<?=$name?>" class="form-field" Placeholder="Billing Name" readonly="readonly">
 				</div>

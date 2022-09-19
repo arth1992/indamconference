@@ -1,6 +1,6 @@
 <?php
 include('config.php');
-include('crypto.php');
+
 // if method is not post
 if ($_SERVER["REQUEST_METHOD"] !== "POST") {
 	echo "Direct access is not allowed";
@@ -40,26 +40,6 @@ if ($validation->fails()) {
 	endif;
 
 	$get_pricing_details = get_price($user_nationality,$user_category); 
-	$merchant_data='';
-
-	$payment_details  = array(
-		'merchant_id' => CCA_MERCHANT_ID,
-		'currency' => $get_pricing_details[1],
-		'amount' => $get_pricing_details[0],
-		'redirect_url' => 'payment-response.php',
-		'cancel_url' => 'payment-cancel.php',
-		'billing_name' => $first_name.' ',$last_name,
-		'billing_country' => $country,
-		'billing_email' => $email
-	);
-
-	foreach($payment_details as $key => $value): 
-		$merchant_data.= $key.'='.$value.'&';
-	endforeach;
-
-	$insert = $db->query('INSERT INTO transactions_master (txn_status,txn_user_email,txn_amount,txn_currency) VALUES (?,?,?,?)', 'processing',$email,$get_pricing_details[0],$get_pricing_details[1]);
-	$merchant_data .= "order_id=".$insert->lastInsertID();
-	$encrypted_data = encrypt($merchant_data,"31C0F6A8751F2A5909EC13F0DF2A5661");
 }
 ?>
 <?php include('header.php'); ?>
@@ -68,14 +48,12 @@ if ($validation->fails()) {
 		<div class="col-md-12 col-lg-12">
 			
 			<form name="frmPayment" action="https://test.ccavenue.com/transaction/transaction.do?command=initiateTransaction" method="POST">
-				<input type="hidden" name="merchant_id" value="212736">
+				<input type="hidden" name="merchant_id" value="<?=CCA_MERCHANT_ID?>">
 				<input type="hidden" name="language" value="EN">				
 				<input type="hidden" name="currency" value="<?=$get_pricing_details[1]?>">
 				<input type="hidden" name="amount" value="<?=$get_pricing_details[0]?>">
-				<input type="hidden" name="redirect_url" value="https://localhost/indamconf/payment-response.php">
-				<input type="hidden" name="cancel_url" value="https://localhost/indamconf/payment-cancel.php">
-				<input type="hidden" name="encRequest" value="<?=$encrypted_data?>">
-				<input type="hidden" name="access_code" value="AVYM84GC19BY82MYYB">
+				<input type="hidden" name="redirect_url" value="<?=$_ENV['APP_DOMAIN']?>payment-response.php">
+				<input type="hidden" name="cancel_url" value="<?=$_ENV['APP_DOMAIN']?>payment-cancel.php">
 				<div class="form-group">
 					<input type="text" name="billing_name" value="<?=$first_name." ".$last_name?>" class="form-field" Placeholder="Billing Name" readonly="readonly">
 				</div>

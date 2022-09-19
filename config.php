@@ -1,13 +1,12 @@
 <?php 
-session_start(); 
-
+session_start();
 require_once 'vendor/autoload.php';
-
 use Rakit\Validation\Validator;
-$validator = new Validator;
 
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
 $dotenv->safeLoad();
+
+$validator = new Validator;
 
 require('db.php');
 
@@ -19,87 +18,118 @@ define('DB_DATABASE',$_ENV['DB_DATABASE']);
 define("CCA_MERCHANT_ID", $_ENV['CCA_MERCHANT_ID']);
 define("CCA_ACCESS_CODE", $_ENV['CCA_ACCESS_CODE']);
 define("CCA_WORKING_KEY", $_ENV['CCA_WORKING_KEY']);
-define("EARLY_BIRD_DATE", "2022-09-19");
 
+define("EARLY_BIRD","2022-09-25");
 
-if($_ENV['ENVIRONMENT'] == "development") : 
-    error_reporting(E_ALL);
-else :
-    error_reporting(0);
-endif;
-
+define("FROM_EMAIL","arparikh1010@gmail.com");
 global $db;
+
 global $allowed_nationality;
 $allowed_nationality = array("saarc","other");
-global $allowed_category;
-$allowed_category = array("academician","research_scholar");
 
+global $allowed_category;
+$allowed_category = array("academician","student","other");
+
+
+if($_ENV['ENVIRONMENT'] == "development"){
+    ini_set('display_errors', 1);
+    ini_set('display_startup_errors', 1);
+    error_reporting(E_ALL);
+}
 
 try{
     $db = new db(DB_HOST,DB_USER,DB_PASSWORD,DB_DATABASE);
+
 }catch(Exception $e){   
     echo 'Database connect error : ',  $e->getMessage(), "\n";
     exit;
 }
 
-//create our cleaner/validation function
-function input_cleaner($input) {
-    $input = trim($input);
-    $input = stripslashes($input);
-    $input = htmlspecialchars($input);
-    return $input;
-  }
-
-function get_price($nationality,$category){
-    $early_bird = false;
-    $price = 0;
-    $currency = "INR";
-    // first check if early bird is applied or not
-    $current_date = date('Y-m-d');
-    if($current_date <= EARLY_BIRD_DATE) {
-        $early_bird = true;
-    }
-
-    switch ($nationality){
-        case "saarc" :
-             switch($category) {
-                case "academician" : 
-                    if($early_bird) : 
-                      $price = 6000;
-                    else :
-                      $price = 7000;
-                    endif;
-                break;
-                case "research_scholar": 
-                    if($early_bird) : 
-                        $price = 3000;
-                      else :
-                        $price = 4000;
-                      endif;
-                break;
-             }
-            break;
-        default : 
-            switch($category) {
-                case "academician" : 
-                    if($early_bird) : 
-                    $price = 300;
-                    else :
-                    $price = 350;
-                    endif;
-                break;
-                case "research_scholar": 
-                    if($early_bird) : 
-                        $price = 100;
-                    else :
-                        $price = 150;
-                    endif;
-                break;
-            }
-            $currency = "USD";
-            break;
-    }
-
-    return array($price,$currency);
-
+# sanitize form data
+function input_cleaner($data)
+{
+    $data = htmlspecialchars($data);
+    $data = stripslashes($data);
+    $data = trim($data);
+    return $data;
 }
+
+function get_price_details($nationality,$category,$is_member = false){
+
+    $currency = "INR";
+    $amount = 0;
+    switch ($nationality) {
+        
+        case "saarc" : 
+            if($category == "student") : 
+                if($is_member) {
+                    if(date('Y-m-d') <= EARLY_BIRD){
+                        $amount = 2400;
+                    }else{
+                        $amount = 3200;
+                    }
+                }else {
+                    if(date('Y-m-d') <= EARLY_BIRD){
+                        $amount = 3000;
+                    }else{
+                        $amount = 4000;
+                    }
+                }
+            else : 
+
+                if($is_member) {
+                    if(date('Y-m-d') <= EARLY_BIRD){
+                        $amount = 4800;
+                    }else{
+                        $amount = 5600;
+                    }
+                }else {
+                    if(date('Y-m-d') <= EARLY_BIRD){
+                        $amount = 6000;
+                    }else{
+                        $amount = 7000;
+                    }
+                }
+            endif;
+
+        break;
+        
+        default : 
+            if($category == "student") : 
+                if($is_member) {
+                    if(date('Y-m-d') <= EARLY_BIRD){
+                        $amount = 80;
+                    }else{
+                        $amount = 120;
+                    }
+                }else {
+                    if(date('Y-m-d') <= EARLY_BIRD){
+                        $amount = 100;
+                    }else{
+                        $amount = 150;
+                    }
+                }
+            else : 
+
+                if($is_member) {
+                    if(date('Y-m-d') <= EARLY_BIRD){
+                        $amount = 240;
+                    }else{
+                        $amount = 280;
+                    }
+                }else {
+                    if(date('Y-m-d') <= EARLY_BIRD){
+                        $amount = 300;
+                    }else{
+                        $amount = 350;
+                    }
+                }
+                
+            endif;
+            $currency = "USD";
+        break;
+
+    }
+    return array($amount,$currency);
+}
+

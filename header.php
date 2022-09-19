@@ -66,12 +66,16 @@
             white-space: nowrap;
             -webkit-overflow-scrolling: touch;
         }
+
+        .iti{
+            display: block !important;
+        }
     </style>
 
 
     <!-- Custom styles for this template -->
     <link href="assets/css/form-validation.css" rel="stylesheet">
-
+    <link rel="stylesheet" href="assets/css/intlTelInput.min.css">
 </head>
 
 <body class="bg-light">

@@ -17,6 +17,10 @@
 	}
 	// insert this transaction into our transactions master 
 	$insert = $db->query('INSERT INTO transactions_master (txn_status,txn_registration_id,txn_user_email,txn_amount,txn_currency) VALUES (?,?,?,?,?)', 'processing',$_POST['order_id'],$_POST['billing_email'],$_POST['amount'],$_POST['currency']);
+
+	if($_POST['currency'] == "USD") :
+		$merchant_data .= "currency=INR";	
+	endif;
 	$merchant_data .= "currency=".$_POST['currency'];
 	$encrypted_data = encrypt($merchant_data,$working_key);
 	

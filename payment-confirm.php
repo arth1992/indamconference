@@ -112,7 +112,7 @@ if ($validation->fails()) {
 	<main>
 		<div class="col-md-12 col-lg-12">
 			
-			<form name="frmPayment" action="https://test.ccavenue.com/transaction/transaction.do?command=initiateTransaction" method="POST">
+			<form name="frmPayment" action="ccavRequestHandler.php" method="POST">
 				<input type="hidden" name="merchant_id" value="<?=CCA_MERCHANT_ID?>">
 				<input type="hidden" name="language" value="EN">				
 				<input type="hidden" name="currency" value="<?=$get_pricing_details[1]?>">

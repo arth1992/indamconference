@@ -5,7 +5,7 @@
 <body>
 <center>
 <?php include('config.php')?>	
-<?php include('crypto.php')?>
+<?php include('Crypto.php')?>
 
 <?php
 	$merchant_data='';

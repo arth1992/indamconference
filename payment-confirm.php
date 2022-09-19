@@ -74,12 +74,14 @@ if ($validation->fails()) {
 	endif;
 
 	$get_pricing_details = get_price_details($nationality,$registration_type,$is_valid_member); 
-
+	
 	if($get_pricing_details[0] == 0){
 		$_SESSION['error'][] = "There was error fetching price. Please try again.";
 		header("Location: " . $_SERVER['HTTP_REFERER']);
 		exit;
 	}
+
+	
 
 	// insert into registration master with status inactive 
 	$insert_registration = $db->query('INSERT INTO registrations_master 

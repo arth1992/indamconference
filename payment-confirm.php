@@ -93,7 +93,7 @@ if ($validation->fails()) {
 		// insert into transactions master 
 		$insert_transaction = $db->query('INSERT INTO transactions_master 
 					(txn_user_email,txn_status,txn_registration_id,txn_amount,txn_currency) 
-					VALUES (?,?,?,?)',
+					VALUES (?,?,?,?,?)',
 					array(
 						$email,'processing',$registration_id,$get_pricing_details[0],$get_pricing_details[1]
 					));

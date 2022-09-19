@@ -46,7 +46,7 @@ if ($validation->fails()) {
 	$phone = input_cleaner($_POST['phone']);
 
 	// check if email is already registered
-	$is_registered = $db->query('SELECT * FROM registrations_master WHERE email = ?', $email);
+	$is_registered = $db->query('SELECT * FROM registrations_master WHERE email = ? and status = 1', $email);
 	if ($is_registered->numRows() > 0) :
 		$_SESSION['error'][] = "You are already registered.";
 		header("Location: " . $_SERVER['HTTP_REFERER']);
@@ -108,8 +108,8 @@ if ($validation->fails()) {
 				<input type="hidden" name="currency" value="<?=$get_pricing_details[1]?>">
 				<input type="hidden" name="amount" value="<?=$get_pricing_details[0]?>">
 				<input type="hidden" name="redirect_url" value="<?=$_ENV['APP_DOMAIN']?>payment-response.php">
-				<input type="hidden" name="cancel_url" value="<?=$_ENV['APP_DOMAIN']?>payment-cancel.php">
-				<input type="hidden" name="order_id" value="INDAM-CONF-2022-".$registration_id>
+				<input type="hidden" name="cancel_url" value="<?=$_ENV['APP_DOMAIN']?>returnback.php">
+				<input type="hidden" name="order_id" value="INDAM-CONF-2022-<?=$registration_id?>">
 				<div class="form-group">
 					<input type="text" name="billing_name" value="<?=$name?>" class="form-field" Placeholder="Billing Name" readonly="readonly">
 				</div>

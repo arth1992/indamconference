@@ -1,11 +1,11 @@
 <html>
 <head>
-<title> CCAvenue Payment Gateway Integration kit</title>
+<title>Processing payment..</title>
 </head>
 <body>
 <center>
 <?php include('config.php')?>	
-<?php include('Crypto.php')?>
+<?php include('crypto.php')?>
 
 <?php
 	$merchant_data='';

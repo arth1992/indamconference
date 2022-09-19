@@ -1,6 +1,7 @@
 {
     "require": {
         "twbs/bootstrap": "5.0.2",
-        "vlucas/phpdotenv": "^5.4"
+        "vlucas/phpdotenv": "^5.4",
+        "rakit/validation": "^1.4"
     }
 }

@@ -71,6 +71,7 @@
 
     <!-- Custom styles for this template -->
     <link href="assets/css/form-validation.css" rel="stylesheet">
+
 </head>
 
 <body class="bg-light">

@@ -1,5 +1,6 @@
 <?php
 include('config.php');
+include('crypto.php');
 
 // if method is not post
 if ($_SERVER["REQUEST_METHOD"] !== "POST") {
@@ -110,13 +111,13 @@ if ($validation->fails()) {
 			
 			<form name="frmPayment" action="ccavRequestHandler.php" method="POST">
 
-				<input type="hidden" name="merchant_id" value="<?=CCA_MERCHANT_ID?>">
+				<input type="hidden" name="merchant_id" value="<?=make_input_encrypt(CCA_MERCHANT_ID)?>">
 				<input type="hidden" name="language" value="EN">				
-				<input type="hidden" name="currency" value="<?=$get_pricing_details[1]?>">
-				<input type="hidden" name="amount" value="<?=$get_pricing_details[0]?>">
+				<input type="hidden" name="currency" value="<?=make_input_encrypt($get_pricing_details[1])?>">
+				<input type="hidden" name="amount" value="<?=make_input_encrypt($get_pricing_details[0])?>">
 				<input type="hidden" name="redirect_url" value="<?=$_ENV['APP_DOMAIN']?>payment-response.php">
 				<input type="hidden" name="cancel_url" value="<?=$_ENV['APP_DOMAIN']?>returnback.php">
-				<input type="hidden" name="order_id" value="INDAM-CONF-2022-<?=$registration_id?>">
+				<input type="hidden" name="order_id" value="<?=make_input_encrypt("INDAM-CONF-2022-".$registration_id."")?>">
 
 				<div class="form-group row">
 					<label for="inputEmail3" class="col-sm-2 col-form-label">Name</label>

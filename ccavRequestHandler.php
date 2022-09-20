@@ -9,14 +9,38 @@
 <?php include('crypto.php')?>
 
 <?php
+	$enc_keys =  array("merchant_id","currency","amount","order_id");
+	$post_data = array();
+	$false_data = 0;
+	// let decrypt data first 
+	foreach ($_POST as $key => $value){
+		if(in_array($key,$enc_keys)) : 
+			$dec_value = make_input_decrypt($value);
+			$enc_value = make_input_encrypt($dec_value);
+			if($enc_value === $value)  :
+				$post_data[$key] = $dec_value;
+			else : 
+				$false_data += 1;
+			endif;
+		else :
+			$post_data[$key] = $dec_value;
+		endif;
+	}
+
+	if($false_data > 0) :
+		$_SESSION['error'][] = "There is some error processing your request. Please try again.";
+		header("Location: " . $_ENV['APP_DOMAIN']);
+		exit;
+	endif;
 	$merchant_data='';
 	$working_key = CCA_WORKING_KEY;
 	$access_code = CCA_ACCESS_CODE;
 	$usd_inr_rate = 'NULL';
-	$is_usd = ($_POST['currency'] == "USD" ?  true : false);
+	$is_usd = ($post_data['currency'] == "USD" ?  true : false);
 
 
-	foreach ($_POST as $key => $value){
+	foreach ($post_data as $key => $value){
+
 		if($is_usd && $key == "currency"){
 			$merchant_data.= $key.'=INR&';
 		}

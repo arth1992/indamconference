@@ -63,9 +63,24 @@ if($update_txn->affectedRows() == 1) :
 	$registration_id = explode('-',$order_id);
 	$registration_id = intval($registration_id[3]);
 	$db->query('UPDATE registrations_master  SET status = 1 WHERE id = ?  LIMIT 1', $registration_id);
+	
+endif; ?>
+<?php include('header.php'); ?>
+<div class="container">
+    <main>
+        <div class="py-5 text-center">
+            <img class="d-block mx-auto mb-4" src="assets/images/logo.png" alt="">
+        </div>
 
-	$_SESSION['error'][] = "You have sucessfully registered for the conference. Thank you!";
-	header("Location: " . $_ENV['APP_DOMAIN']);
-	exit;
-endif;
-?>
+        <div class="jumbotron text-center">
+            <h1 class="display-3">Thank you!.</h1>
+            <p class="lead"><strong>Registration successful.</strong>We will send you more details about this conference on your registered email address</p>
+            <hr>
+            <p class="lead">
+                <a class="btn btn-primary btn-sm" href="https://indam.in" role="button">Continue to homepage</a>
+            </p>
+        </div>
+    </main>
+</div>
+<?php session_destroy();
+include('footer.php'); ?>

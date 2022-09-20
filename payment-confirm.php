@@ -7,6 +7,7 @@ if ($_SERVER["REQUEST_METHOD"] !== "POST") {
 	exit;
 }
 
+$_SESSION['user_journey'] = [];
 
 // make it
 $validation = $validator->make($_POST, [
@@ -31,7 +32,7 @@ if ($validation->fails()) {
 	header("Location: " . $_SERVER['HTTP_REFERER']);
 	exit;
 } else {
-
+	
 	$name = input_cleaner($_POST['name']);
 	$email = strtolower(input_cleaner($_POST['email']));
 	$registration_type = input_cleaner($_POST['registrationType']);
@@ -44,7 +45,7 @@ if ($validation->fails()) {
 		$member_id = input_cleaner($_POST['member_id']);
 	}
 	$phone = input_cleaner($_POST['phone']);
-
+	
 	// check if email is already registered
 	$is_registered = $db->query('SELECT * FROM registrations_master WHERE email = ? and status = 1', $email);
 	if ($is_registered->numRows() > 0) :
@@ -81,8 +82,6 @@ if ($validation->fails()) {
 		exit;
 	}
 
-	
-
 	// insert into registration master with status inactive 
 	$insert_registration = $db->query('INSERT INTO registrations_master 
 					(full_name,email,mobile,affiliation,designation,registration_type,nationality,is_member,member_id) 
@@ -92,6 +91,7 @@ if ($validation->fails()) {
 					));
 	if($insert_registration->affectedRows() == 1) : 
 		$registration_id = $insert_registration->lastInsertID();
+		$_SESSION['user_journey']['reg_id'] = $registration_id;
 	else : 
 		$_SESSION['error'][] = "Something went wrong. Please try again.";
 		header("Location: " . $_SERVER['HTTP_REFERER']);
@@ -101,10 +101,15 @@ if ($validation->fails()) {
 ?>
 <?php include('header.php'); ?>
 <div class="container">
-	<main>
+  		<main>
+		  <div class="py-5 text-center">
+			<img class="d-block mx-auto mb-4" src="assets/images/logo.png" alt="">
+			<h2>Payment Details</h2>	
+		</div>
 		<div class="col-md-12 col-lg-12">
 			
 			<form name="frmPayment" action="ccavRequestHandler.php" method="POST">
+
 				<input type="hidden" name="merchant_id" value="<?=CCA_MERCHANT_ID?>">
 				<input type="hidden" name="language" value="EN">				
 				<input type="hidden" name="currency" value="<?=$get_pricing_details[1]?>">
@@ -112,15 +117,31 @@ if ($validation->fails()) {
 				<input type="hidden" name="redirect_url" value="<?=$_ENV['APP_DOMAIN']?>payment-response.php">
 				<input type="hidden" name="cancel_url" value="<?=$_ENV['APP_DOMAIN']?>returnback.php">
 				<input type="hidden" name="order_id" value="INDAM-CONF-2022-<?=$registration_id?>">
-				<div class="form-group">
-					<input type="text" name="billing_name" value="<?=$name?>" class="form-field" Placeholder="Billing Name" readonly="readonly">
+
+				<div class="form-group row">
+					<label for="inputEmail3" class="col-sm-2 col-form-label">Name</label>
+					<div class="col-sm-10">
+					<input type="text" class="form-control" id="billing_name" name="billing_name" value="<?=$name?>" readonly >
+					</div>
 				</div>
-				<div class="form-group">
-					<input type="text" name="billing_email" value="<?=$email?>" class="form-field" Placeholder="Email" readonly="readonly">
+				<div class="form-group row">
+					<label for="inputEmail3" class="col-sm-2 col-form-label">Email</label>
+					<div class="col-sm-10">
+					<input type="text" class="form-control" id="billing_email" name="billing_email" value="<?=$email?>" readonly >
+					</div>
 				</div>
-				<div>
-					<button class="btn-payment" type="submit">Pay Now</button>
-				</div>
+				<div class="form-group row">
+					<label for="inputEmail3" class="col-sm-2 col-form-label">Amount details</label>
+					<div class="col-sm-10">
+					<input type="text" class="form-control" id="amount_details" value="<?=$get_pricing_details[1]." ".$get_pricing_details[0]?> " readonly>
+					</div>
+				</div>			
+				<div class="form-group row text-center">
+    				<div class="col-sm-10 mt-5">
+      					<button type="submit" class="btn btn-success">Pay now</button>
+						<button type="button" class="btn btn-secondary">Cancel</button>
+    				</div>
+  				</div>
 			</form>
 		</div>
 	</main>

@@ -1,7 +1,4 @@
 <?php
-
-	error_reporting(0);
-
 	function encrypt($plainText,$key)
 	{
 		$secretKey = hextobin(md5($key));

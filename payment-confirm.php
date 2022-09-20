@@ -34,7 +34,7 @@ if ($validation->fails()) {
 	exit;
 } else {
 	
-	$name = input_cleaner($_POST['name']);
+	$name = preg_replace('/[^\da-z ]/i', '', input_cleaner($_POST['name']));
 	$email = strtolower(input_cleaner($_POST['email']));
 	$registration_type = input_cleaner($_POST['registrationType']);
 	$present_designation = input_cleaner($_POST['present_designation']);

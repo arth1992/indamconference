@@ -50,7 +50,6 @@ function input_cleaner($data)
 {
     $data = htmlspecialchars($data);
     $data = stripslashes($data);
-    $data = preg_replace('/[^\da-z ]/i', '', $data);
     $data = trim($data);
     return $data;
 }

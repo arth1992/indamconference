@@ -23,7 +23,7 @@
 				$false_data += 1;
 			endif;
 		else :
-			$post_data[$key] = $dec_value;
+			$post_data[$key] = $value;
 		endif;
 	}
 
@@ -56,7 +56,8 @@
 	}
 
 	// insert this transaction into our transactions master 
-	$insert = $db->query('INSERT INTO transactions_master (txn_status,usd_to_inr,txn_registration_id,txn_user_email,txn_amount,txn_currency) VALUES (?,?,?,?,?,?)', 'processing',$usd_inr_rate,$_POST['order_id'],$_POST['billing_email'],$_POST['amount'],$_POST['currency']);
+	$insert = $db->query('INSERT INTO transactions_master (txn_status,usd_to_inr,txn_registration_id,txn_user_email,txn_amount,txn_currency) VALUES (?,?,?,?,?,?)',
+	 'processing',$usd_inr_rate,$post_data['order_id'],$post_data['billing_email'],$post_data['amount'],$post_data['currency']);
 	$encrypted_data = encrypt($merchant_data,$working_key);
 	
 ?>

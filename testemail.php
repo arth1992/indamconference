@@ -11,17 +11,17 @@ $mail = new PHPMailer(true);
 
 try {
     //Server settings
-    $mail->SMTPDebug = SMTP::DEBUG_SERVER;                      //Enable verbose debug output
+    $mail->SMTPDebug = 3;                      //Enable verbose debug output
     $mail->isSMTP();                                            //Send using SMTP
     $mail->Host       = $_ENV['MAIL_HOST'];                     //Set the SMTP server to send through
-    $mail->SMTPAuth   = true;                                   //Enable SMTP authentication
-    $mail->Username   = $_ENV['MAIL_HOST'];                     //SMTP username
+    $mail->SMTPAuth   = 'AUTH LOGIN';                                   //Enable SMTP authentication
+    $mail->Username   = $_ENV['MAIL_USERNAME'];                     //SMTP username
     $mail->Password   = $_ENV['MAIL_PASSWORD'];                               //SMTP password
-    $mail->SMTPSecure = $_ENV['MAIL_ENCRYPTION'];            //Enable implicit TLS encryption
+    $mail->SMTPSecure = 'tls';            //Enable implicit TLS encryption
     $mail->Port       = 587;                                    //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
-    $mail->Timeout    = 30;
+    $mail->Timeout    = 300;
     //Recipients
-    $mail->setFrom('arparikh1010@gmail.com', 'Mailer');
+    $mail->setFrom('info@indam.in', 'Mailer');
     $mail->addAddress('mr.arthparikh@gmail.com', 'Joe User');     //Add a recipient
    
     $mail->isHTML(true);                                  //Set email format to HTML

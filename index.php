@@ -90,7 +90,7 @@ include('header.php');
       ?>
 
 
-      <form class="needs-validation" method="post" action="payment-confirm.php" novalidate>
+      <form class="needs-validation" method="post" id="registration-form" name="registration-form" action="payment-confirm.php" novalidate>
 
       <div class="col-lg-12 mb-4">
             <label for="name" class="form-label fw-bold">Name</label>
@@ -110,8 +110,10 @@ include('header.php');
           </div>
 
           <div class="col-md-6 form-group">
-            <label for="mm" class="form-label fw-bold">Mobile no.</label>
-              <input type="tel" class="form-control" id="phone" name="phone" placeholder="Your mobile number" required>
+            <label for="mm" class="form-label fw-bold">Mobile number.</label>
+              <input type="hidden" id="country" name="country"/>
+              <input type="hidden" id="dial_code" name="dial_code"/>
+              <input type="tel" class="form-control" name="phone_number" id="phone_number" placeholder="Your mobile number" required>
               <div class="invalid-feedback">
                 Please enter a valid mobile number.
               </div>
@@ -176,8 +178,30 @@ include('header.php');
         </div>
 
         <div class="col-lg-12" id="member_id_div" style="display: none;">
-            <label for="member_id" class="form-label fw-bold" >If you are an INDAM member Please enter your INDAM registration id</label>
-            <input type="text" class="form-control" id="member_id" name="member_id" placeholder="Member ID">
+            <label for="member_id" class=" sr-only form-label fw-bold" >Please enter your INDAM member id</label>
+            <div class="input-group mb-2">
+              <div class="input-group-prepend">
+                <div class="input-group-text">INDAM</div>
+              </div>
+              <div class="col-xs-2">
+              <input type="text" minlength="4" maxlength="4"  id="mem_1" name="indam_member_id[]" class="form-control" id="inlineFormInputGroup" placeholder="4 digit">
+              </div>
+              <div class="input-group-prepend">
+                <div class="input-group-text">-</div>
+              </div>
+              <div class="col-xs-1">
+              <input type="text"  minlength="1" maxlength="1"  id="mem_2" class="form-control col-sm-2" name="indam_member_id[]" id="inlineFormInputGroup" placeholder="Character">
+              </div>
+              <div class="input-group-prepend">
+                <div class="input-group-text">-</div>
+              </div>
+              <div class="col-xs-2">
+              <input type="text"  minlength="4" maxlength="4" id="mem_3" class="form-control" name="indam_member_id[]" id="inlineFormInputGroup" placeholder="Last 4 digit">
+              </div>
+            </div>
+            <small id="ndamHelpBlock" class="form-text text-muted">
+                You can find your INDAM member id by logging into your INDAM account. It looks like i.e INDAM-2022-S-0000
+            </small>
             <div class="invalid-feedback">
               Please enter your INDAM member id.
             </div>

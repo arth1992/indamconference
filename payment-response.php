@@ -1,13 +1,13 @@
 <?php
+// if method is not post
+if ($_SERVER["REQUEST_METHOD"] !== "POST") {
+	echo "Direct access is not allowed";
+	exit;
+}
+
 include('config.php');
 include('crypto.php');
 
-
-if(!isset($_SESSION['user_journey'])) :
-	$_SESSION['error'][] = "There was an error processing your request. In case of any amount deducted, please contact INDAM.";
-	header("Location: " . $_ENV['APP_DOMAIN']);
-	exit;
-endif;
 
 $workingKey = CCA_WORKING_KEY; // Working Key should be provided here.
 $encResponse = $_POST["encResp"]; // This is the response sent by the CCAvenue Server
@@ -19,6 +19,14 @@ for ($i = 0; $i < $dataSize; $i++) {
 	$information = explode('=', $decryptValues[$i]);
 	$responseMap[$information[0]] = $information[1];
 }
+
+
+if(count($responseMap) == 0) :
+	$_SESSION['error'][] = "There was an error processing your request. In case of any amount deducted, please contact INDAM.";
+	header("Location: " . $_ENV['APP_DOMAIN']);
+	exit;
+endif;
+
 
 $order_status = $responseMap['order_status'];
 $order_id = $responseMap['order_id'];
@@ -45,7 +53,7 @@ switch($responseMap['order_status']) {
 		break;
 	default :
 		$final_pay_status = "failed";
-		$failure_message = $responseMap['failure_message'];
+		$failure_message = $responseMap['status_message'];
 	break;
 }
 
@@ -56,6 +64,7 @@ $update_txn = $db->query('UPDATE transactions_master  SET
 		 txn_remarks = "'.$failure_message.'",
 		 txn_updated_at = "'.date('Y-m-d H:i:s').'",
 		 txn_bank_ref = "'.$bank_ref_no.'",
+		 txn_amount_paid = "'.$responsemap['mer_amount'].'",
 		 txn_payment_mode = "'.$payment_mode.'"
 		 WHERE txn_id = '.$txn_details['txn_id'].'  LIMIT 1');
 if($update_txn->affectedRows() == 1) : 

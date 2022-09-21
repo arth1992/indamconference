@@ -19,7 +19,7 @@ $validation = $validator->make($_POST, [
 	'nationality'            => 'required',
 	'email'                 => 'required|email',
 	'country'               => 'required',
-	'member_id'	            => 'required_if:is_member,yes',
+	'indam_member_id'	    => 'required_if:is_member,yes',
 	'phone'					=> 'required|digits_between:10,13'
 ]);
 
@@ -32,21 +32,29 @@ if ($validation->fails()) {
 	$_SESSION['error'][] = "You did not select proper input.";
 	header("Location: " . $_SERVER['HTTP_REFERER']);
 	exit;
-} else {
+}else {
 	
-	$name = preg_replace('/[^\da-z ]/i', '', input_cleaner($_POST['name']));
+	$name = preg_replace('/[^A-Za-z ]/i', '', input_cleaner($_POST['name']));
 	$email = strtolower(input_cleaner($_POST['email']));
 	$registration_type = input_cleaner($_POST['registrationType']);
 	$present_designation = input_cleaner($_POST['present_designation']);
 	$nationality = input_cleaner($_POST['nationality']);
 	$affiliation = input_cleaner($_POST['affiliation']);
+	$country = input_cleaner($_POST['country']);
+	$dial_code = input_cleaner($_POST['dial_code']);
 	$is_member = $_POST['is_member'];
 	$member_id = NULL;
 	if($is_member == "yes") {
-		$member_id = input_cleaner($_POST['member_id']);
+		if(is_array($_POST['indam_member_id']) && count($_POST['indam_member_id'])) :
+			$member_id = input_cleaner(implode('-',$_POST['indam_member_id']));
+		else : 
+			$_SESSION['error'][] = "We could not find the member id you shared. Please try again.";
+			header("Location: " . $_SERVER['HTTP_REFERER']);
+			exit;
+		endif;
 	}
-	$phone = input_cleaner($_POST['phone']);
-	
+	$phone = input_cleaner($_POST['phone_number']);
+
 	// check if email is already registered
 	$is_registered = $db->query('SELECT * FROM registrations_master WHERE email = ? and status = 1', $email);
 	if ($is_registered->numRows() > 0) :
@@ -85,10 +93,10 @@ if ($validation->fails()) {
 
 	// insert into registration master with status inactive 
 	$insert_registration = $db->query('INSERT INTO registrations_master 
-					(full_name,email,mobile,affiliation,designation,registration_type,nationality,is_member,member_id) 
-					VALUES (?,?,?,?,?,?,?,?,?)',
+					(full_name,email,mobile,country,dial_code,affiliation,designation,registration_type,nationality,is_member,member_id) 
+					VALUES (?,?,?,?,?,?,?,?,?,?,?)',
 					array(
-						$name,$email,$phone,$affiliation,$present_designation,$registration_type,$nationality,$is_member,$member_id,
+						$name,$email,$phone,$country,$dial_code,$affiliation,$present_designation,$registration_type,$nationality,$is_member,$member_id,
 					));
 	if($insert_registration->affectedRows() == 1) : 
 		$registration_id = $insert_registration->lastInsertID();

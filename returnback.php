@@ -1,11 +1,4 @@
 <?php
-
-// if method is not post
-if ($_SERVER["REQUEST_METHOD"] !== "POST") {
-	echo "Direct access is not allowed";
-	exit;
-}
-
 include('config.php');
 include('crypto.php');
 

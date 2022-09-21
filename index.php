@@ -94,7 +94,7 @@ include('header.php');
 
       <div class="col-lg-12 mb-4">
             <label for="name" class="form-label fw-bold">Name</label>
-            <input type="name" class="form-control" id="name" name="name" placeholder="Enter your full name" required>
+            <input type="name"  minlength="8" maxlength="20"  class="form-control" id="name" name="name" placeholder="Enter your full name" required>
             <div class="invalid-feedback">
               Please enter your name.
             </div>
@@ -103,7 +103,7 @@ include('header.php');
       <div class="row g-3">
           <div class="col-md-6 form-group">
            <label for="email" class="form-label fw-bold">Email</label>
-            <input type="email" class="form-control" id="email" name="email" placeholder="you@example.com" required>
+            <input type="email"  minlength="8" maxlength="50" class="form-control" id="email" name="email" placeholder="you@example.com" required>
             <div class="invalid-feedback">
               Please enter a valid email address for registration purpose.
             </div>

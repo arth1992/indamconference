@@ -64,7 +64,7 @@ $update_txn = $db->query('UPDATE transactions_master  SET
 		 txn_remarks = "'.$failure_message.'",
 		 txn_updated_at = "'.date('Y-m-d H:i:s').'",
 		 txn_bank_ref = "'.$bank_ref_no.'",
-		 txn_amount_paid = "'.$responsemap['mer_amount'].'",
+		 txn_amount_paid = "'.$responsemap['amount'].'",
 		 txn_payment_mode = "'.$payment_mode.'"
 		 WHERE txn_id = '.$txn_details['txn_id'].'  LIMIT 1');
 if($update_txn->affectedRows() == 1) : 

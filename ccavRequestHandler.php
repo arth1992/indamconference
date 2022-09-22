@@ -48,6 +48,7 @@
 			$get_usd_to_inr_rate =  usd_to_inr($value);
 			$usd_inr_rate = $get_usd_to_inr_rate[0];
 			$merchant_data.= $key.'='.$get_usd_to_inr_rate[1].'&';
+			$merchant_data.= 'merchant_param1=Note: Current USD to INR rate is '.$usd_inr_rate.' INR&';
 		}
 		else{
 			$merchant_data.= $key.'='.$value.'&';

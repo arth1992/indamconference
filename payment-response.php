@@ -64,15 +64,14 @@ $update_txn = $db->query('UPDATE transactions_master  SET
 		 txn_remarks = "'.$failure_message.'",
 		 txn_updated_at = "'.date('Y-m-d H:i:s').'",
 		 txn_bank_ref = "'.$bank_ref_no.'",
-		 txn_amount_paid = "'.$responsemap['amount'].'",
+		 txn_amount_paid = "'.$responseMap['amount'].'",
 		 txn_payment_mode = "'.$payment_mode.'"
 		 WHERE txn_id = '.$txn_details['txn_id'].'  LIMIT 1');
-if($update_txn->affectedRows() == 1) : 
-	
+		 
+if($update_txn->affectedRows() == 1 && $final_pay_status == "success") : 
 	$registration_id = explode('-',$order_id);
 	$registration_id = intval($registration_id[3]);
 	$db->query('UPDATE registrations_master  SET status = 1 WHERE id = ?  LIMIT 1', $registration_id);
-	
 endif; ?>
 <?php include('header.php'); ?>
 <div class="container">
@@ -81,14 +80,25 @@ endif; ?>
             <img class="d-block mx-auto mb-4" src="assets/images/logo.png" alt="">
         </div>
 
+		<?php if($final_pay_status == "success") : ?>
         <div class="jumbotron text-center">
-            <h1 class="display-3">Thank you!.</h1>
+            <h1 class="display-3">Thank you!</h1>
             <p class="lead"><strong>Registration successful.</strong>We will send you more details about this conference on your registered email address</p>
             <hr>
             <p class="lead">
                 <a class="btn btn-primary btn-sm" href="https://indam.in" role="button">Continue to homepage</a>
             </p>
         </div>
+		<?php else : ?>
+		<div class="jumbotron text-center">
+            <h1 class="display-3">Oops! Something went wrong.</h1>
+            <p class="lead"><strong>Payment Gateway response : </strong> <?= $failure_message ?></p>
+            <hr>
+            <p class="lead">
+                <a class="btn btn-primary btn-sm" href="<?= $_ENV['APP_DOMAIN'] ?>" role="button">Continue to homepage</a>
+            </p>
+        </div>
+		<?php endif; ?>
     </main>
 </div>
 <?php session_destroy();

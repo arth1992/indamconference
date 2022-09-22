@@ -37,10 +37,10 @@ if ($validation->fails()) {
 	$name = preg_replace('/[^A-Za-z ]/i', '', input_cleaner($_POST['name']));
 	$email = strtolower(input_cleaner($_POST['email']));
 	$registration_type = input_cleaner($_POST['registrationType']);
-	$present_designation = input_cleaner($_POST['present_designation']);
+	$present_designation = preg_replace('/[^A-Za-z ]/i', '', input_cleaner($_POST['present_designation']));
 	$nationality = input_cleaner($_POST['nationality']);
-	$affiliation = input_cleaner($_POST['affiliation']);
-	$country = input_cleaner($_POST['country']);
+	$affiliation = preg_replace('/[^A-Za-z ]/i', '', input_cleaner($_POST['affiliation']));
+	$country = preg_replace('/[^A-Za-z ]/i', '', input_cleaner($_POST['country']));
 	$dial_code = input_cleaner($_POST['dial_code']);
 	$is_member = $_POST['is_member'];
 	$member_id = NULL;
@@ -100,6 +100,7 @@ if ($validation->fails()) {
 					));
 	if($insert_registration->affectedRows() == 1) : 
 		$registration_id = $insert_registration->lastInsertID();
+		$db->query('UPDATE registrations_master SET registration_id = "INDAM-CONF-2022-'.$registration_id.'" WHERE id = ? ',$registration_id);
 		$_SESSION['user_journey']['reg_id'] = $registration_id;
 	else : 
 		$_SESSION['error'][] = "Something went wrong. Please try again.";

@@ -4,6 +4,7 @@
         "vlucas/phpdotenv": "^5.4",
         "rakit/validation": "^1.4",
         "guzzlehttp/guzzle": "^7.5",
-        "phpmailer/phpmailer": "^6.6"
+        "phpmailer/phpmailer": "^6.6",
+        "phpoffice/phpspreadsheet": "^1.24"
     }
 }
